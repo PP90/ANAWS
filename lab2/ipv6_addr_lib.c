@@ -1,10 +1,9 @@
 //Library that contains a lot of useful function. 
-//Function list:
-//Set an address
-//Get an address
-
-//Send packet with UDP (Broadcasting mode and not only)
-//Receive packet with UPD (Possibile filtering)
+//Functions list:
+//Set and get an address
+//Send broadcast messages
+//Receive a broadcast message and call the call_back function(For this we assume that the mote is in the radio range of the sender)
+//
 
 #include "simple-udp.h"
 #include "net/ip/uip.h"
@@ -12,9 +11,10 @@
 #include "net/ip/uip-debug.h"
 #include "simple-udp.h"
 #include <stdio.h>
+#include "project_conf.h"
 #define UDP_PORT 1234
 
-static struct simple_udp_connection broadcast_connection;
+static int n_rcvd_msg=0;
 
 //Function to set IPv6 address.
 //It can be set either manually or automatically or statefully.
@@ -36,17 +36,17 @@ printf("IPv6 address: ");
 for(i=0; i< UIP_DS6_ADDR_NB; i++){//capire perchè ho 2 indirizzi diversi
 		printf("i=%d\n",i);
 		state=uip_ds6_if.addr_list[i].state;
-		if(state==0){//state=0 tentative
+		if(state==ADDR_TENTATIVE){//state=0 tentative
 		printf("Address tentative:\n");
 		uip_debug_ipaddr_print(&uip_ds6_if.addr_list[i].ipaddr);
 		printf("\n");
 		}
-		if(state==1){//state=1 preferred
+		if(state==ADDR_PREFERRED){//state=1 preferred
 		printf("Address preferred:\n");
 		uip_debug_ipaddr_print(&uip_ds6_if.addr_list[i].ipaddr);
 		printf("\n");
 		}
-		if(state==2){//state=2 deprecated
+		if(state==ADDR_DEPRECATED){//state=2 deprecated
 		printf("Address deprecated:\n");
 		uip_debug_ipaddr_print(&uip_ds6_if.addr_list[i].ipaddr);
 		printf("\n");
@@ -60,7 +60,7 @@ for(i=0; i< UIP_DS6_ADDR_NB; i++){//capire perchè ho 2 indirizzi diversi
 	}
 }
 
-static void 
+static void //Callback function when a message is received
         callback_function(struct simple_udp_connection *c,
         const uip_ipaddr_t *snd_addr,
         uint16_t snd_port,
@@ -69,24 +69,20 @@ static void
         const uint8_t *data,
         uint16_t datalen){
         int i;
-        printf("Sender addr: ");
+        printf(" (%d) I've received ",n_rcvd_msg++);
+
+	for(i=0; i<datalen; i++){
+        	printf("%c",data[i]);
+        }
+	printf(" from ");
         uip_debug_ipaddr_print(snd_addr);
         printf("\n");
-        for(i=0; i<datalen; i++){
-        printf("%c",data[i]);
-        }
-        printf("\n");
-}
-//The sender sends a broadcast message to all multicast link local nodes
-void send_udp_broadcast(){
-uip_ipaddr_t mcast_allnodes_address;
-uip_create_linklocal_allnodes_mcast(&mcast_allnodes_address);
-simple_udp_register(&broadcast_connection, UDP_PORT, NULL,UDP_PORT, callback_function);
-simple_udp_sendto(&broadcast_connection, "Test", 4, (const uip_ipaddr_t*)&mcast_allnodes_address);
-}
+       }
+	
 
-//The receiver when receives something from broadcast, call the callback function
-void receive_udp_broadcast(){
-simple_udp_register(&broadcast_connection, UDP_PORT, NULL, UDP_PORT, callback_function);
+//This function returns a link local multicast address
+uip_ipaddr_t get_multicast_all_nodes_addr(){
+	uip_ipaddr_t mcast_allnodes_address;
+	uip_create_linklocal_allnodes_mcast(&mcast_allnodes_address);
+	return mcast_allnodes_address;
 }
-

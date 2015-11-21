@@ -1,0 +1,29 @@
+What is this stuff ? 
+This folder contains these source code files that can be executed on Zolertia Z1 motes:
+
+1. snd_broadcast_UDP.c
+2. rcv_UDP.c
+3. unicast_snd.c
+4. ipv6_addr_lib.c
+
+The purpose of each source code is explained in the source code files themselves.
+-----------------------------------------------------------------------------------
+How to compile ?
+
+make TARGET=z1 'xxx' 
+
+where 'xxx' is the name of source code without the inverse comma and .c extention
+
+Example: 
+make TARGET=z1 snd_broadcast_UDP
+
+Antoher solution is to compile through Cooja simulation enviroinment.
+-----------------------------------------------------------------------------------
+How can I see the output ?
+To see the output is needed either the Zolertia Z1 motes connected to USB interface or the Cooja simulation enviroinment by which is possible to deploy a sensor network.
+The simulation file is already present in this folder.
+
+-----------------------------------------------------------------------------------
+It doesn't work. Why ?
+The compilation process and execution has been made on Contiki Operating System that contains already all library for Zolertia Z1 motes. Maybe you are using either a different Operating System or you don't have the needed library. Moreover, if you'are using the Cooja enviroiment, try to reload and re-start the simulation.
+
