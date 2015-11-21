@@ -15,6 +15,6 @@ AUTOSTART_PROCESSES(&snd_process);
 PROCESS_THREAD(snd_process, ev, data){
 PROCESS_BEGIN();
 set_address();
-send_udp_broadcast();
+ send_udp_broadcast();
 PROCESS_END();
 }
