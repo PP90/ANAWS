@@ -23,7 +23,7 @@ PROCESS_BEGIN();
 
 	while(1){//A broadcast message is sent periodically
 		PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&et));
-		simple_udp_sendto(&broadcast_connection, "Ciao", 4, (const 		uip_ipaddr_t*)&mcast_allnodes_address);
+		simple_udp_sendto(&broadcast_connection, "Hello", 5, (const 		uip_ipaddr_t*)&mcast_allnodes_address);
 		etimer_reset(&et);
 		}
 	

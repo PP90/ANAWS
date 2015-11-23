@@ -27,6 +27,16 @@ uip_ds6_set_addr_iid(&ipaddr, &uip_lladdr);//The IPv6 address is get from MAC ad
 uip_ds6_addr_add(&ipaddr, 0, ADDR_AUTOCONF);
 }
 
+//An address is assigned and returned
+uip_ipaddr_t* get_address(){
+uip_ipaddr_t ipaddr;
+//First field is the prefix of my link local(?).The last field is what IPv6 adrress it is assigned to my device
+uip_ip6addr(&ipaddr,0xaaaa, 0,0,0,0,0,0,0);
+uip_ds6_set_addr_iid(&ipaddr, &uip_lladdr);//The IPv6 address is get from MAC address.
+uip_ds6_addr_add(&ipaddr, 0, ADDR_AUTOCONF);
+return ipaddr;
+}
+
 
 //UIP_DS6_ADDR_NB is the address list size. The size depends on number of unicast addresses.
 

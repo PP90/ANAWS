@@ -1,4 +1,4 @@
-//A mote sends a broadcast UDP message in the link local scope. 
+//A mote sends periodically a broadcast UDP message in the link local scope. 
 #include "contiki.h"
 #include <stdio.h>//for printf function
 #include "ipv6_addr_lib.c"//Libraries for IpV6 functions
